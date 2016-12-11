@@ -14,22 +14,13 @@ import RapGenerator.RapLineGenerator
 app = Flask(__name__)
 sys.path.append('/RapGenerator')
 
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configured')
+# app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configured')
 
-
-###
-# Routing for your application.
-###
-
-rlg = ""
-
-def initialize_server():
-    download('cmudict')
-    download('averaged_perceptron_tagger')
-    download('universal_tagset')
-    global rlg
-    rlg = RapGenerator.RapLineGenerator()
-    rlg.readAll()
+download('cmudict')
+download('averaged_perceptron_tagger')
+download('universal_tagset')
+rlg = RapGenerator.RapLineGenerator()
+rlg.readAll()
 
 @app.route("/result", methods=["GET", "POST"])
 def result_route():
@@ -74,6 +65,5 @@ def homepage_route():
     return initial_form
     
 if __name__ == '__main__':
-    initialize_server()
     print "Server initialized, booting up..."
     app.run(debug=True)

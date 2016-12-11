@@ -6,10 +6,12 @@ Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
 
-import os
-from flask import Flask, render_template, request, redirect, url_for
+import os, sys
+from flask import *
+import RapGenerator.RapLineGenerator
 
 app = Flask(__name__)
+sys.path.append('/RapGenerator')
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configured')
 
@@ -18,45 +20,55 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configur
 # Routing for your application.
 ###
 
-@app.route('/')
-def home():
-    """Render website's home page."""
-    return "Hello World!"
+rlg = ""
 
+def initialize_server():
+    global rlg
+    rlg = RapGenerator.RapLineGenerator()
+    rlg.readAll()
 
-@app.route('/about/')
-def about():
-    """Render the website's about page."""
-    return render_template('about.html')
+@app.route("/result", methods=["GET", "POST"])
+def result_route():
+    if request.method == "POST":
+        line = str(request.form['starter'])
+        num_verses = int(request.form['verse_no'])
+        generated_verse = "<title>S.W.A.G.G.E.R. Online Demo Results</title>"
+        if len(line) == 0:
+            generated_verse += 'Initial sentence: <b>real gs move in silence like lasagna</b><br /><br /><i>'
+            generated_verse += '<br />'.join(rlg.generateVerse(numVerses=num_verses))
+        else:
+            generated_verse += 'Initial sentence: <b>' + line + '</b><br /><br /><i>'
+            generated_verse += '<br />'.join(rlg.generateVerse(line, numVerses=num_verses))
+        generated_verse += "</i><br /><br />Make a new phrase <a href='/'>here!</a>"
 
+        return generated_verse
 
-###
-# The functions below should be applicable to all Flask apps.
-###
+    else:
+        return redirect(url_for('homepage_route'))
 
-@app.route('/<file_name>.txt')
-def send_text_file(file_name):
-    """Send your static text file."""
-    file_dot_text = file_name + '.txt'
-    return app.send_static_file(file_dot_text)
+@app.route("/", methods=["GET", "POST"])
+def homepage_route():
 
-
-@app.after_request
-def add_header(response):
+    initial_form = """<title>S.W.A.G.G.E.R. Online Demo</title>
+    <h1>S.W.A.G.G.E.R. Online Demo</h1>
+    <p>Rap is unique among music genres for its emphasis on expression through complex and meaningful lyrics. We design a system that aims to generate interesting and novel rap lyrics using a corpus of rap lyrics from popular rap artists. The system is we present is based on n-gram models and probabilistic context-free grammars.</p>
+    <p>Enter a sentence containing at least three words to start out with (or leave blank for a random starter):</p>
+    <form action="/result" method="POST">
+        <textarea name="starter" style="width:100%; font-size:1.2em;"></textarea>
+        <p>Enter a number of verses you would like to produce (each takes about 10 seconds):</p>
+        <select name="verse_no">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+        </select><br /><br />
+        <input type="submit" value="Enter sentence">
+    </form>
+    <br />
+    <small>All work by <a href="http://umich.edu/~bradmath">Brady Mathieson</a>, <a href="mailto:nimesham@umich.edu">Nimesha Muthya</a>, <a href="http://psturmfels.github.io">Pascal Sturmfels</a>, and <a href="mailto:rosawu@umich.edu">Rosa Wu</a>.</small>
     """
-    Add headers to both force latest IE rendering engine or Chrome Frame,
-    and also to cache the rendered page for 10 minutes.
-    """
-    response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
-    response.headers['Cache-Control'] = 'public, max-age=600'
-    return response
-
-
-@app.errorhandler(404)
-def page_not_found(error):
-    """Custom 404 page."""
-    return render_template('404.html'), 404
-
-
+    return initial_form
+    
 if __name__ == '__main__':
+    initialize_server()
     app.run(debug=True)

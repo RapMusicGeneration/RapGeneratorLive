@@ -16,9 +16,6 @@ sys.path.append('/RapGenerator')
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configured')
 
-download('cmudict')
-download('averaged_perceptron_tagger')
-download('universal_tagset')
 rlg = RapGenerator.RapLineGenerator()
 rlg.readAll()
 

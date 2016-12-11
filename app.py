@@ -14,7 +14,7 @@ import RapGenerator.RapLineGenerator
 app = Flask(__name__)
 sys.path.append('/RapGenerator')
 
-# app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configured')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configured')
 
 download('cmudict')
 download('averaged_perceptron_tagger')

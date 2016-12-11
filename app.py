@@ -8,6 +8,7 @@ This file creates your application.
 
 import os, sys
 from flask import *
+from nltk import download
 import RapGenerator.RapLineGenerator
 
 app = Flask(__name__)
@@ -23,6 +24,9 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configur
 rlg = ""
 
 def initialize_server():
+    download('cmudict')
+    download('averaged_perceptron_tagger')
+    download('universal_tagset')
     global rlg
     rlg = RapGenerator.RapLineGenerator()
     rlg.readAll()

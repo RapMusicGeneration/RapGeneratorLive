@@ -75,4 +75,5 @@ def homepage_route():
     
 if __name__ == '__main__':
     initialize_server()
+    print "Server initialized, booting up..."
     app.run(debug=True)

@@ -23,9 +23,6 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configur
 ###
 
 def initialize_server():
-    download('cmudict')
-    download('averaged_perceptron_tagger')
-    download('universal_tagset')
     rlg = RapGenerator.RapLineGenerator()
     rlg.readAll()
     return rlg

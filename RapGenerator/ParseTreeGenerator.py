@@ -8,14 +8,7 @@ class ParseTreeGenerator:
         self.terminalTagSet = ('ADJ', 'ADP', 'ADV', 'CONJ', 'DET', 'NOUN', 'NUM', 'PRT', 'PRON', 'VERB')
         self.maxRuleProd = 4
         self.smallestLineSize = 3
-        self.canParse = True
-
-        try:
-            from stat_parser import Parser
-            self.parser = Parser()
-        except ImportError:
-            print 'pyStatParser is unavailable. The grammar training feature will be disabled.'
-            self.canParse = False
+        self.canParse = False
 
     def generateRandomGrammarLine(self):
         """

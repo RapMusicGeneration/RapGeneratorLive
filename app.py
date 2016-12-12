@@ -23,12 +23,8 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configur
 ###
 
 def initialize_server():
-    download('cmudict')
-    download('averaged_perceptron_tagger')
-    download('universal_tagset')
     rlg = RapGenerator.RapLineGenerator()
     rlg.readAll()
-    call('rm -rf ../pyStatParser', shell=True)
     return rlg
 
 rlg = initialize_server()
@@ -76,5 +72,4 @@ def homepage_route():
     return initial_form
     
 if __name__ == '__main__':
-    print "Server initialized, booting up..."
     app.run(debug=True)

@@ -47,6 +47,9 @@ class RapLineGenerator:
                 print(' '.join(nextLine))
                 finishedPhrase.append(' '.join(nextLine))
                 previousLine = nextLine
+                
+            if i != numVerses-1:
+                finishedPhrase.append("---")
 
         return finishedPhrase
 

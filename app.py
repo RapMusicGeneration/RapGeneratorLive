@@ -16,8 +16,20 @@ sys.path.append('/RapGenerator')
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configured')
 
-rlg = RapGenerator.RapLineGenerator()
-rlg.readAll()
+
+###
+# Routing for your application.
+###
+
+def initialize_server():
+    download('cmudict')
+    download('averaged_perceptron_tagger')
+    download('universal_tagset')
+    rlg = RapGenerator.RapLineGenerator()
+    rlg.readAll()
+    return rlg
+
+rlg = initialize_server()
 
 @app.route("/result", methods=["GET", "POST"])
 def result_route():
@@ -43,7 +55,7 @@ def homepage_route():
 
     initial_form = """<title>S.W.A.G.G.E.R. Online Demo</title>
     <h1>S.W.A.G.G.E.R. Online Demo</h1>
-    <p>Rap is unique among music genres for its emphasis on expression through complex and meaningful lyrics. We design a system that aims to generate interesting and novel rap lyrics using a corpus of rap lyrics from popular rap artists. The system is we present is based on n-gram models and probabilistic context-free grammars.</p>
+    <p>Rap is unique among music genres for its emphasis on expression through complex and meaningful lyrics. We design a system that aims to generate interesting and novel rap lyrics using a corpus of rap lyrics from popular rap artists. The system we present is based on n-gram models and probabilistic context-free grammars.</p>
     <p>Enter a sentence containing at least three words to start out with (or leave blank for a random starter):</p>
     <form action="/result" method="POST">
         <textarea name="starter" style="width:100%; font-size:1.2em;"></textarea>

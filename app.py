@@ -34,7 +34,7 @@ def initialize_server():
     call('rm -rf ../pyStatParser', shell=True)
     return rlg
 
-#rlg = initialize_server()
+rlg = initialize_server()
 
 @app.route("/result", methods=["GET", "POST"])
 def result_route():

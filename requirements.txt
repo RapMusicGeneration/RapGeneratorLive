@@ -19,4 +19,4 @@ urllib3==1.19
 virtualenv==1.11.6
 Werkzeug==0.11.11
 wget==3.2
--e git+https://github.com/emilmont/pyStatParser.git
+./pyStatParser

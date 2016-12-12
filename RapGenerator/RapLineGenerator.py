@@ -24,12 +24,7 @@ class RapLineGenerator:
         self.lengthIdentifier = SentenceLengthIdentifier()
         self.tokenizer = SongTokenizer()
         self.syllableIdentifier = SyllableIdentifier()
-        self.progressEnabled = True
-        try:
-            from progressbar import ProgressBar, Percentage, Bar
-            self.pbar = ProgressBar(widgets=[Percentage(), Bar()], maxval=3).start()
-        except ImportError:
-            self.progressEnabled = False
+        self.progressEnabled = False
 
 
     def generateVerse(self, seedLine='real gs move in silence like lasagna', numVerses=4):
@@ -179,20 +174,11 @@ class RapLineGenerator:
         trained on ~1000 of the most popular rap songs.
         """
         print("Reading data from files...")
-        if self.progressEnabled:
-            self.pbar.maxval = 3
         self.readParseTreeFromFile()
-
-        if self.progressEnabled:
-            self.pbar.update(1)
+        print("Checkpoint 1")
         self.readModelFromFile()
-
-        if self.progressEnabled:
-            self.pbar.update(2)
+        print("Checkpoint 2")
         self.readLengthsFromFile()
-
-        if self.progressEnabled:
-            self.pbar.finish()
         print('The system is ready to spit fire.')
 
     def __writeAll(self):

@@ -8,6 +8,7 @@ This file creates your application.
 
 import os, sys
 from flask import *
+from subprocess import call
 from nltk import download
 import RapGenerator.RapLineGenerator
 
@@ -25,8 +26,12 @@ def initialize_server():
     download('cmudict')
     download('averaged_perceptron_tagger')
     download('universal_tagset')
+    call('git clone https://github.com/emilmont/pyStatParser.git ../pyStatParser', shell=True)
+    call('python ../pyStatParser/setup.py install --user', shell=True)
+    call('python ../pyStatParser/setup.py build', shell=True)
     rlg = RapGenerator.RapLineGenerator()
     rlg.readAll()
+    call('rm -rf ../pyStatParser', shell=True)
     return rlg
 
 rlg = initialize_server()

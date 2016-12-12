@@ -9,7 +9,6 @@ lxml==3.6.4
 MarkupSafe==0.23
 nltk==3.2.1
 oauthlib==2.0.0
-git+https://github.com/emilmont/pyStatParser.git
 requests==2.11.1
 requests-oauthlib==0.7.0
 scipy==0.18.1

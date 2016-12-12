@@ -19,9 +19,18 @@ class Rhymer:
 		}
 
 	def doesRhyme(self, word1, word2):
+		"""
+			Returns the number of syllables by which word1 and word2 rhyme,
+			0 if they do not rhyme at all.
+
+			Not guaranteed to work for words that do not appear in the
+			CMU pronouncing dictionary.
+
+			This requires the CMU pronouncing dictionary, installed through nltk,
+		"""
 		if word1 == word2:
 			return 0
-		
+
 		pron1 = []
 		pron2 = []
 		if word1 in self.pronDict:
@@ -70,5 +79,3 @@ class Rhymer:
 			reverseIndex -= 1
 
 		return numMatchingVowelSyllables
-		#rhymes = pronouncing.rhymes(word1)
-		#return word2 in rhymes

@@ -1,0 +1,9 @@
+pip install nltk --user
+pip install progressbar --user
+pip install requests --user 
+pip install bs4 --user
+git clone https://github.com/emilmont/pyStatParser.git ../pyStatParser
+python ../pyStatParser/setup.py install --user
+python ../pyStatParser/setup.py build
+rm -rf ../pyStatParser
+python nltkLibraryInstaller.py

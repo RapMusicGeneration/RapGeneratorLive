@@ -16,6 +16,16 @@ class LanguageModel:
 		self.weightLine = 2
 
 	def readGramsFromFile(self, f1='ModelData/unigrams.txt', f2='ModelData/bigrams.txt', f3='ModelData/trigrams.txt', f4='ModelData/quadgrams.txt', f5='ModelData/linegrams.txt'):
+		"""
+		f1: file containing unigrams
+		f2: file containing bigrams
+		f3: file containing trigrams
+		f4: file containing quadgrams
+		f5: file containing linegrams
+
+		Read stored n-grams from a file. The n-grams must be a literal dictionary of the following format:
+		ngram[word1][word2]...[wordn] = count
+		"""
 		f = open(f1, 'r')
 		uniString = f.read()
 		self.unigrams = literal_eval(uniString)
@@ -42,6 +52,9 @@ class LanguageModel:
 		f.close()
 
 	def writeGramsToFile(self, f1='ModelData/unigrams.txt', f2='ModelData/bigrams.txt', f3='ModelData/trigrams.txt', f4='ModelData/quadgrams.txt', f5='ModelData/linegrams.txt'):
+		"""
+		Write n-grams to the specified files; see readGramsFromFile.
+		"""
 		f = open(f1, 'w')
 		f.write(str(self.unigrams))
 		f.close()
@@ -63,12 +76,26 @@ class LanguageModel:
 		f.close()
 
 	def ngrams(self, songArray, n):
+		"""
+		songArray: a list of strings
+		n: size of n-gram
+
+		Extracts and returns a list of all n-grams from the songArray.
+		"""
 		output = []
 		for i in range(len(songArray)-n+1):
 			output.append(songArray[i:i+n])
 		return output
 
 	def fillGramCountsFromSong(self, song):
+		"""
+		song: a list of lists, where each list within the list represents a line
+        in the song, and each line is a list of strings that represent words in the line.
+
+		Adds the counts of all of the unigrams, bigrams, trigrams, quadgrams,
+		and linegrams from song to the class object. Meant to be called in
+		sequence for many songs.
+		"""
 		songArray = list(word for line in song for word in line)
 		index = 0
 		biArray = self.ngrams(songArray, 2)
@@ -146,6 +173,13 @@ class LanguageModel:
 				self.quadgrams[first][second][third][fourth] += 5
 
 	def additiveLineProb(self, line, previousLine):
+		"""
+		line: a line of a generated verse
+		previousLine: the previous line of a generated verse
+
+		Returns the sum of the probabilities of each word in line
+		occuring in sequence given the language model.
+		"""
 		if not self.unigrams:
 			raise RuntimeError("Unigrams dictionary is empty")
 
@@ -225,6 +259,14 @@ class LanguageModel:
 
 
 	def returnCandidateWords(self, previous, lastPrevLine):
+		"""
+		previous: an array of the previous three words, [first, second, third]
+		lastPrevLine: the last word of the previous line
+
+		Returns a list of tuples, (word, PR), sorted by PR value.
+		Each word has PR probability of occuring given the previous
+		three words and the last word of the previous line.
+		"""
 		if not self.unigrams:
 			raise RuntimeError("Unigrams dictionary is empty")
 

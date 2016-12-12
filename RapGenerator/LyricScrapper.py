@@ -27,6 +27,14 @@ class LyricScrapper:
 			self.progressEnabled = False
 
 	def scrapArtists(self, baseDir="TrainingData"):
+		"""
+		baseDir: the directory to download song data to
+
+		For each artist in self.artists, download the top ten songs into baseDir.
+		Each song will have the file name artist-X.txt, where 0 <= X <= 9
+
+		This requires the bs4 library.
+		"""
 		if not os.path.exists(baseDir):
 			os.makedirs(baseDir)
 

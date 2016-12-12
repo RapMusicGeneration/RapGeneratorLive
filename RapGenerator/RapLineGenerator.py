@@ -27,15 +27,18 @@ class RapLineGenerator:
         self.progressEnabled = True
         try:
             from progressbar import ProgressBar, Percentage, Bar
+            self.pbar = ProgressBar(widgets=[Percentage(), Bar()], maxval=3).start()
         except ImportError:
             self.progressEnabled = False
 
 
     def generateVerse(self, seedLine='real gs move in silence like lasagna', numVerses=4):
         """
-        This method generates numLines lines of rap based on the seedLine.
+        seedLine: line to generate a verse from
+        numLines: number of lines to generate
 
-        It uses RapLineGenerator.pickBestLine to pick the next line given the previous.
+        This method generates a verse of rap using the seed line. It calls
+        RapLineGenerator.pickBestLine to pick the next line given the previous.
         """
         finishedPhrase = []
         seedLine = self.tokenizer.lineTokenize(seedLine)
@@ -47,23 +50,28 @@ class RapLineGenerator:
                 print(' '.join(nextLine))
                 finishedPhrase.append(' '.join(nextLine))
                 previousLine = nextLine
-                
-            if i != numVerses-1:
+            if i != numVerses - 1:
                 finishedPhrase.append("---")
 
         return finishedPhrase
 
     def pickBestLine(self, previousLine, numTrials=30):
         """
+        previousLine: the previous line in the generated verse
+        numTrials: number of different candidate lines to generate and rank
+
         This method generates numTrials different candidate lines using
         RapLineGenerator.generateCandidateLine. It then uses a domain-specific
         scoring metric to pick the highest-scored line out of the generated lines.
 
         The scoring metrics include:
-            - The sum of probabilites of the words in the line normalized by the length of the line.
+            - The sum of probabilites of the words in the line normalized
+                by the length of the line.
             - The individual probability of the length of the line.
-            - The probability of the length of the line given the length previous line.
-            - The absolute value of the difference of the number of syllables between the line and the previous line
+            - The probability of the length of the line given the length
+                previous line.
+            - The absolute value of the difference of the number of syllables
+                between the line and the previous line
             - Whether or not this line rhymes with the previous
             - How many words within the line the last word of the line rhymes with
             - The number of repeated words in the line
@@ -106,6 +114,8 @@ class RapLineGenerator:
 
     def generateCandidateLine(self, previousLine):
         """
+        previousLine: the previous line in the generated verse
+
         This method generates a line of part of speech tags using
         ParseTreeGenerator.generateRandomGrammarLine.
 
@@ -169,27 +179,38 @@ class RapLineGenerator:
         trained on ~1000 of the most popular rap songs.
         """
         print("Reading data from files...")
+        if self.progressEnabled:
+            self.pbar.maxval = 3
         self.readParseTreeFromFile()
+
+        if self.progressEnabled:
+            self.pbar.update(1)
         self.readModelFromFile()
+
+        if self.progressEnabled:
+            self.pbar.update(2)
         self.readLengthsFromFile()
+
+        if self.progressEnabled:
+            self.pbar.finish()
         print('The system is ready to spit fire.')
 
     def __writeAll(self):
         print("Writing data to files...")
         if self.progressEnabled:
-            pbar = ProgressBar(widgets=[Percentage(), Bar()], maxval=3).start()
+            self.pbar.maxval = 3
         self.writeParseTreeToFile()
 
         if self.progressEnabled:
-            pbar.update(1)
+            self.pbar.update(1)
         self.writeModelToFile()
 
         if self.progressEnabled:
-            pbar.update(2)
+            self.pbar.update(2)
         self.writeLengthsToFile()
 
         if self.progressEnabled:
-            pbar.update(3)
+            self.pbar.finish()
         print('\n')
 
     def __writeParseTreeToFile(self, filename="ModelData/grammarRules.txt"):
@@ -243,14 +264,16 @@ class RapLineGenerator:
         print("Training language model...")
         files = os.listdir(baseDir)
         if self.progressEnabled:
-            pbar = ProgressBar(widgets=[Percentage(), Bar()], maxval=self.scrapper.numSongs).start()
+            self.pbar.maxval = self.scrapper.numSongs
         progress = 1
         for title in files:
             if title.endswith('.txt'):
                 if self.progressEnabled:
-                    pbar.update(progress)
+                    self.pbar.update(progress)
                 progress += 1
                 self.model.fillGramCountsFromSong(self.tokenizer.songTokenize(title))
+        if self.progressEnabled:
+            self.pbar.finish()
         print('\n')
 
     def learnGrammars(self, baseDir="TrainingData"):
@@ -262,14 +285,16 @@ class RapLineGenerator:
         print("Learning grammar rules...")
         files = os.listdir(baseDir)
         if self.progressEnabled:
-            pbar = ProgressBar(widgets=[Percentage(), Bar()], maxval=self.scrapper.numSongs).start()
+            self.pbar.maxval = self.scrapper.numSongs
         progress = 1
         for title in files:
             if title.endswith('.txt'):
                 if self.progressEnabled:
-                    pbar.update(progress)
+                    self.pbar.update(progress)
                 progress += 1
                 self.treeGenerator.addToRulesFromSong(self.tokenizer.songTokenize(title))
+        if self.progressEnabled:
+            self.pbar.finish()
         print('\n')
 
     def agglutinateLengths(self, baseDir="TrainingData"):
@@ -281,14 +306,16 @@ class RapLineGenerator:
         print("Tracking line lengths...")
         files = os.listdir(baseDir)
         if self.progressEnabled:
-            pbar = ProgressBar(widgets=[Percentage(), Bar()], maxval=self.scrapper.numSongs).start()
+            self.pbar.maxval = self.scrapper.numSongs
         progress = 1
         for title in files:
             if title.endswith('.txt'):
                 if self.progressEnabled:
-                    pbar.update(progress)
+                    self.pbar.update(progress)
                 progress += 1
                 self.lengthIdentifier.agglutinateSentenceLengths(self.tokenizer.songTokenize(title))
+        if self.progressEnabled:
+            self.pbar.finish()
         print('\n')
 
     def __learnAndStoreModels(self):
